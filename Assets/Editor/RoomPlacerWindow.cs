@@ -109,10 +109,17 @@ public class RoomPlacerWindow : EditorWindow
         // UNDO
         if (GUILayout.Button("Undo", GUILayout.Height(80)))
         {
-            Undo.PerformUndo();
-            Debug.Log("Undo eseguito");
+            if (previewObject != null)
+            {
+                ClearSelection();
+            }
+            else
+            {
+                Undo.PerformUndo();
+            }
 
             e.Use();
+            GUIUtility.ExitGUI();
         }
 
         GUILayout.EndArea();
@@ -175,7 +182,10 @@ public class RoomPlacerWindow : EditorWindow
 
                     // Tag la porta della stanza già in scena
                     if (placedDoor != null)
+                    {
+                        Undo.RecordObject(placedDoor.gameObject, "Spawned Gameobject");
                         placedDoor.gameObject.tag = "UsedDoor";
+                    }
 
                     // Trovo la stessa porta sullo spawned object
                     if (previewDoor != null)
@@ -183,7 +193,9 @@ public class RoomPlacerWindow : EditorWindow
                         string relativePath = GetRelativePath(previewObject.transform, previewDoor.transform);
                         Transform spawnedDoor = spawned.transform.Find(relativePath);
                         if (spawnedDoor != null)
+                        {
                             spawnedDoor.gameObject.tag = "UsedDoor";
+                        }
                     }
                 }
                 lastSnappedColliders.Clear();
@@ -433,6 +445,7 @@ public class RoomPlacerWindow : EditorWindow
         selectedPrefab = null;
         previewRotation = 0f;
         DestroyImmediate(previewObject);
+        previewObject = null;
     }
 
 
