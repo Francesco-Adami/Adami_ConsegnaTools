@@ -34,6 +34,7 @@ public class RoomPlacerWindow : EditorWindow
 
     bool isRangeVisible = true;
     float range = 20f;
+    Vector2 scrollPosition;
 
     // SNAP CONFIG
     private bool isSnapped;
@@ -64,45 +65,26 @@ public class RoomPlacerWindow : EditorWindow
         // area in alto a sinistra
         GUILayout.BeginArea(new Rect(20, 50, 150, 500));
 
-        // GUI CONTENT combina immagine + tooltip in un unico oggetto
-        GUIContent content = new GUIContent();
+        // Inizio Scroll View
+        scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.MinHeight(120), GUILayout.MaxHeight(300));
 
-        // prendo il content del primo elemento 
-        content = GetContent(0);
-        if (GUILayout.Button(content, GUILayout.Height(80)))
+        if (folderData.prefabAssets != null)
         {
-            Debug.Log("Selezionato elemento 1");
+            for (int i = 0; i < folderData.prefabAssets.Length; i++)
+            {
+                if (folderData.prefabAssets[i] == null) continue;
 
-            SelectPrefab(folderData.prefabAssets[0]);
-
-            e.Use();
+                GUIContent content = GetContent(i);
+                if (GUILayout.Button(content, GUILayout.Height(80)))
+                {
+                    SelectPrefab(folderData.prefabAssets[i]);
+                    e.Use();
+                }
+                GUILayout.Space(10);
+            }
         }
 
-        GUILayout.Space(10);
-
-        // prendo il content del secondo elemento 
-        content = GetContent(1);
-        if (GUILayout.Button(content, GUILayout.Height(80)))
-        {
-            Debug.Log("Selezionato elemento 2");
-
-            SelectPrefab(folderData.prefabAssets[1]);
-
-            e.Use();
-        }
-
-        GUILayout.Space(10);
-
-        // prendo il content del terzo elemento 
-        content = GetContent(2);
-        if (GUILayout.Button(content, GUILayout.Height(80)))
-        {
-            Debug.Log("Selezionato elemento 3");
-
-            SelectPrefab(folderData.prefabAssets[2]);
-
-            e.Use();
-        }
+        GUILayout.EndScrollView();
 
         GUILayout.Space(10);
 
