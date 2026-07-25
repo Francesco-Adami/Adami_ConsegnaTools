@@ -91,14 +91,7 @@ public class RoomPlacerWindow : EditorWindow
         // UNDO
         if (GUILayout.Button("Undo", GUILayout.Height(80)))
         {
-            if (previewObject != null)
-            {
-                ClearSelection();
-            }
-            else
-            {
-                Undo.PerformUndo();
-            }
+            Undo.PerformUndo();
 
             e.Use();
             GUIUtility.ExitGUI();
@@ -110,7 +103,13 @@ public class RoomPlacerWindow : EditorWindow
 
         // -- SE HO SELEZIONATO UN PREFAB --
         #region PARTE LOGICA
-        if (selectedPrefab == null) return;
+        if (selectedPrefab == null)
+        {
+            // prendo il primo prefab disponibile dalla folder selezionata
+            GameObject prefab = folderData.prefabAssets[0];
+
+            SelectPrefab(prefab);
+        }
 
         #region DRAW MESH
         Ray ray = HandleUtility.GUIPointToWorldRay(e.mousePosition);
@@ -122,7 +121,7 @@ public class RoomPlacerWindow : EditorWindow
         }
         #endregion
 
-        // Shift+Q = rotate 90° counter-clockwise, Shift+E = rotate 90° clockwise
+        // Shift+Q = ruota di 90° (antiorario), Shift+E = ruota di 90° (orario)
         if (e.type == EventType.KeyDown && e.shift)
         {
             if (e.keyCode == KeyCode.Q)
@@ -135,13 +134,6 @@ public class RoomPlacerWindow : EditorWindow
                 previewRotation += 90f;
                 e.Use();
             }
-        }
-
-        // ESC per annullare
-        if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Escape)
-        {
-            ClearSelection();
-            e.Use();
         }
 
         #region ISTANZIO LA STANZA
@@ -376,7 +368,7 @@ public class RoomPlacerWindow : EditorWindow
     {
         folderData = new FolderData();
 
-        ClearSelection();
+        //ClearSelection();
 
         if (!AssetDatabase.IsValidFolder(RootFolder)) return;
 
