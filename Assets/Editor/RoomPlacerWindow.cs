@@ -52,6 +52,11 @@ public class RoomPlacerWindow : EditorWindow
         SceneView.duringSceneGui -= OnSceneGUI;
     }
 
+    private void OnDestroy()
+    {
+        ClearSelection();
+    }
+
     // OVERLAY NELLA SCENE VIEW
     private void OnSceneGUI(SceneView sceneView)
     {
